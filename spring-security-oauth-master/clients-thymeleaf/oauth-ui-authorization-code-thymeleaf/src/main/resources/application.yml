@@ -1,0 +1,28 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          custom:
+            client-id: fooClientIdPassword
+            client-secret: secret
+            scope: read,write,foo
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/ui-thymeleaf/login/oauth2/code/custom
+        provider:
+          custom:
+            authorization-uri: http://localhost:8081/spring-security-oauth-server/oauth/authorize
+            token-uri: http://localhost:8081/spring-security-oauth-server/oauth/token
+            user-info-uri: http://localhost:8082/spring-security-oauth-resource/users/extra
+            user-name-attribute: user_name
+  thymeleaf:
+    cache: false  
+              
+server: 
+  port: 8080
+  servlet: 
+    context-path: /ui-thymeleaf
+    
+logging: 
+  level:
+    org.org.springframework: INFO            

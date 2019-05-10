@@ -37,8 +37,13 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**", "/webjars/**", "/error**").permitAll().anyRequest()
-				.authenticated();
+		http
+				.antMatcher("/**")
+				.authorizeRequests()
+					.antMatchers("/", "/login**", "/webjars/**", "/error**")
+					.permitAll()
+				.anyRequest()
+					.authenticated();
 	}
 
 	public static void main(String[] args) {
