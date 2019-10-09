@@ -18,6 +18,7 @@
 .settings
 .springBeans
 /build
+/out
 /code
 MANIFEST.MF
 _site/
