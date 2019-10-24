@@ -1,7 +1,9 @@
 package com.example.demoenum;
 
 import org.assertj.core.api.AssertDelegateTarget;
+import org.assertj.core.api.Fail;
 import org.assertj.core.internal.bytebuddy.asm.Advice;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -9,7 +11,9 @@ import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -119,4 +123,197 @@ public class HashMapTest {
         Assert.isTrue( gardenMap.containsKey(null), "contains null key");
         Assert.isTrue( gardenMap.containsValue(null), "contains null value");
     }
+
+    @Test
+    public void testHashMapIterateKeys() {
+
+        Map<String, Garden> gardenMap = new HashMap<>();
+        final  Garden nullGarden = new Garden(0L , "null");
+        final  Garden firstGarden = new Garden(1L , "first");
+        final  Garden secondGarden = new Garden(2L , "second");
+        gardenMap.put(null, nullGarden);
+        gardenMap.put("firstGarden", firstGarden);
+        gardenMap.put("secondGarden", secondGarden);
+
+        for (String key : gardenMap.keySet()) {
+
+            if (key == null) {
+                Garden theGarden = gardenMap.get(null);
+                Assert.isTrue( theGarden == nullGarden, "got null garden");
+
+                gardenMap.put(null, firstGarden);
+            }
+        }
+        Assert.isTrue( gardenMap.get(null) == firstGarden, "null garden is replaced");
+    }
+
+    @Test
+    public void testHashMapIterateValues() {
+
+        Map<String, Garden> gardenMap = new HashMap<>();
+        final  Garden nullGarden = new Garden(0L , "null");
+        final  Garden firstGarden = new Garden(1L , "first");
+        final  Garden secondGarden = new Garden(2L , "second");
+        gardenMap.put(null, nullGarden);
+        gardenMap.put("firstGarden", firstGarden);
+        gardenMap.put("secondGarden", secondGarden);
+
+        for (Garden garden : gardenMap.values()) {
+
+            if (garden == nullGarden) {
+                garden.setId(3L);
+            }
+        }
+        Assert.isTrue( gardenMap.get(null).getId() == 3L, "null garden is updated");
+    }
+
+    @Test
+    public void testHashMapIterateEntries() {
+
+        Map<String, Garden> gardenMap = new HashMap<>();
+        final  Garden nullGarden = new Garden(0L , "null");
+        final  Garden firstGarden = new Garden(1L , "first");
+        final  Garden secondGarden = new Garden(2L , "second");
+        gardenMap.put(null, nullGarden);
+        gardenMap.put("firstGarden", firstGarden);
+        gardenMap.put("secondGarden", secondGarden);
+
+        for (Map.Entry<String, Garden> entry : gardenMap.entrySet()) {
+
+            if (entry.getKey() == null) {
+                Assert.isTrue(entry.getValue() == nullGarden, "here is the null garden");
+                entry.getValue().setId(3L);
+            }
+        }
+        Assert.isTrue( gardenMap.get(null).getId() == 3L, "null garden is updated");
+    }
+
+    @Test
+    public void testHashMapIterator() {
+
+        Map<String, Garden> gardenMap = new HashMap<>();
+        final  Garden nullGarden = new Garden(0L , "null");
+        final  Garden firstGarden = new Garden(1L , "first");
+        final  Garden secondGarden = new Garden(2L , "second");
+        gardenMap.put(null, nullGarden);
+        gardenMap.put("firstGarden", firstGarden);
+        gardenMap.put("secondGarden", secondGarden);
+
+        Iterator it = gardenMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+
+            if (entry.getKey() == null) {
+                Garden theGarden = (Garden) entry.getValue();
+                Assert.isTrue( theGarden.getId() == 0L, "null garden id is 0");
+                it.remove(); // avoids a ConcurrentModificationException
+            }
+        }
+        Assert.isTrue( gardenMap.size() == 2, "null garden is removed");
+    }
+
+    @Test
+    public void testHashMapConstructorCopy() {
+
+        Map<String, Garden> gardenMap = new HashMap<>();
+        final  Garden nullGarden = new Garden(0L , "null");
+        final  Garden firstGarden = new Garden(1L , "first");
+        final  Garden secondGarden = new Garden(2L , "second");
+        gardenMap.put(null, nullGarden);
+        gardenMap.put("firstGarden", firstGarden);
+        gardenMap.put("secondGarden", secondGarden);
+
+        HashMap<String, Garden> shallowCopy = new HashMap<>(gardenMap);
+        Assert.isTrue( shallowCopy.size() == 3, "shallow copy has same size");
+
+        nullGarden.setId(3L);
+        Assert.isTrue( shallowCopy.get(null).getId() == 3L, "shallow copy is also updated");
+    }
+
+    @Test
+    public void testHashMapPutCopy() {
+
+        Map<String, Garden> gardenMap = new HashMap<>();
+        final  Garden nullGarden = new Garden(0L , "null");
+        final  Garden firstGarden = new Garden(1L , "first");
+        final  Garden secondGarden = new Garden(2L , "second");
+        gardenMap.put(null, nullGarden);
+        gardenMap.put("firstGarden", firstGarden);
+        gardenMap.put("secondGarden", secondGarden);
+
+        HashMap<String, Garden> shallowCopy = new HashMap<>();
+
+        gardenMap.entrySet()
+                .forEach(entry -> shallowCopy.put(entry.getKey(), entry.getValue()));
+
+        Assert.isTrue( shallowCopy.size() == 3, "shallow copy has same size");
+
+        nullGarden.setId(3L);
+        Assert.isTrue( shallowCopy.get(null).getId() == 3L, "shallow copy is also updated");
+    }
+
+    @Test
+    public void testConcurrentHashMapKeyNull() {
+
+        Map<String, Garden> gardenMap = new ConcurrentHashMap<>();
+
+        try {
+            gardenMap.put(null, new Garden());
+        } catch (NullPointerException ex) {
+        }
+        Assert.isTrue(gardenMap.size() == 0, "still empty");
+    }
+
+    @Test
+    public void testConcurrentHashMapRemove() {
+
+
+        Map<String, Garden> gardenMap = new ConcurrentHashMap<>();
+        gardenMap.put("firstGarden", new Garden(1L , "first"));
+        gardenMap.put("secondGarden", new Garden(2L , "second"));
+
+        gardenMap.entrySet()
+                .forEach(entry -> {
+                    if (entry.getKey().equalsIgnoreCase("firstGarden")) {
+                        gardenMap.remove("firstGarden");
+                    }
+                });
+
+        Assert.isTrue( gardenMap.size() == 1, "first garden is gone");
+    }
+
+    @Test
+    public void testConcurrentHashMapTwoThread() throws Exception {
+
+        Map<String, Garden> gardenMap = new ConcurrentHashMap<>();
+        gardenMap.put("firstGarden", new Garden(1L, "first"));
+        gardenMap.put("secondGarden", new Garden(2L, "second"));
+
+        Thread thread1 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(50);
+                    gardenMap.put("third garden", new Garden());
+                } catch (InterruptedException e) {
+                }
+            }
+        });
+
+        Thread thread2 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(70);
+                    Assert.isTrue(gardenMap.size() == 3, "we got one from other theads");
+                } catch (InterruptedException e) {
+                }
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+        Thread.sleep(100);
+
+        Assert.isTrue(gardenMap.size() == 3, "3 now");
+    }
+
 }
