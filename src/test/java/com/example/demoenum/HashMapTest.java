@@ -1,10 +1,6 @@
 package com.example.demoenum;
 
 import com.demoenum.Garden;
-import org.assertj.core.api.AssertDelegateTarget;
-import org.assertj.core.api.Fail;
-import org.assertj.core.internal.bytebuddy.asm.Advice;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
