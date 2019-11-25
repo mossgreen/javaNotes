@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SpringBootApplication
-@EnableJpaRepositories
+//@SpringBootApplication
+//@EnableJpaRepositories
 @Slf4j
 public class JpaDemoApplication implements ApplicationRunner {
 
