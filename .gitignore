@@ -20,6 +20,7 @@
 /build
 /out
 /code
+node_modules/
 MANIFEST.MF
 _site/
 activemq-data
@@ -39,3 +40,5 @@ transaction-logs
 secrets.yml
 .gradletasknamecache
 .sts4-cache
+package-lock.json
+
