@@ -29,9 +29,9 @@ import java.util.List;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
-@SpringBootApplication
+//@SpringBootApplication
 @Slf4j
-@EnableMongoRepositories
+//@EnableMongoRepositories
 public class MongoDemoApp implements CommandLineRunner {
 
 

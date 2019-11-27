@@ -36,5 +36,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compile 'org.joda:joda-money:1.0.1'
 	implementation 'org.jadira.usertype:usertype.core:6.0.1.GA'
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-pool2
+	compile group: 'org.apache.commons', name: 'commons-pool2', version: '2.0'
 
 }
