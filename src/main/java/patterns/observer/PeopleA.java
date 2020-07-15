@@ -1,4 +1,4 @@
-package patterns.Observer;
+package patterns.observer;
 
 public class PeopleA implements People{
     @Override
