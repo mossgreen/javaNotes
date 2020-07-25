@@ -7,7 +7,7 @@ abstract class Pizza {
     String name;
     Dough dough;
     Sauce sauce;
-    List<String > veggies;
+    List<Veggie> veggies;
     Cheese cheese;
     Pepperoni pepperoni;
     Clams clams;
@@ -53,7 +53,7 @@ abstract class Pizza {
         }
 
         if (null != veggies) {
-            veggies.stream().collect(Collectors.joining(","))
+            veggies.stream().map(v -> v.toString()).collect(Collectors.joining(","));
             result.append("\n");
         }
 
@@ -68,6 +68,76 @@ abstract class Pizza {
         }
 
         return result.toString();
+    }
+}
+
+class CheesePizza extends Pizza {
+
+    PizzaIngredientFactory ingredientFactory;
+
+    public CheesePizza(PizzaIngredientFactory ingredientFactory) {
+        this.ingredientFactory = ingredientFactory;
+    }
+
+    @Override
+    void prepare() {
+        System.out.println("preparing " + name);
+        dough = ingredientFactory.createDough();
+        sauce = ingredientFactory.createSauce();
+        cheese = ingredientFactory.createCheese();
+    }
+}
+
+class ClamPizza extends Pizza {
+    PizzaIngredientFactory pizzaIngredientFactory;
+
+    public ClamPizza(PizzaIngredientFactory pizzaIngredientFactory) {
+        this.pizzaIngredientFactory = pizzaIngredientFactory;
+    }
+
+    @Override
+    void prepare() {
+        System.out.println("Preparing " + name);
+        dough = pizzaIngredientFactory.createDough();
+        sauce = pizzaIngredientFactory.createSauce();
+        cheese = pizzaIngredientFactory.createCheese();
+        clams = pizzaIngredientFactory.createClams();
+    }
+}
+
+class PepperOniPizza extends Pizza {
+
+    PizzaIngredientFactory ingredientFactory;
+
+    public PepperOniPizza(PizzaIngredientFactory ingredientFactory) {
+        this.ingredientFactory = ingredientFactory;
+    }
+
+    @Override
+    void prepare() {
+        System.out.println("preparing " + name);
+        dough = ingredientFactory.createDough();
+        sauce = ingredientFactory.createSauce();
+        cheese = ingredientFactory.createCheese();
+        veggies = ingredientFactory.createVeggies();
+        pepperoni = ingredientFactory.createPepperoni();
+    }
+}
+
+class VeggiePizza extends Pizza {
+    PizzaIngredientFactory ingredientFactory;
+
+    public VeggiePizza(PizzaIngredientFactory ingredientFactory) {
+        this.ingredientFactory = ingredientFactory;
+    }
+
+    @Override
+    void prepare() {
+        System.out.println("Preparing " + name);
+        dough = ingredientFactory.createDough();
+        sauce = ingredientFactory.createSauce();
+        cheese = ingredientFactory.createCheese();
+        veggies = ingredientFactory.createVeggies();
     }
 }
 
@@ -91,5 +161,45 @@ class NYPizzaStore extends PizzaStore {
     protected Pizza createPizza(String item) {
         Pizza pizza = null;
         PizzaIngredientFactory ingredientFactory = new NYPizzaIngredientFactory();
+
+        if (item.equalsIgnoreCase("cheese")) {
+            pizza = new CheesePizza(ingredientFactory);
+            pizza.setName("New York Style Cheese Pizza");
+        } else if (item.equalsIgnoreCase("veggie")) {
+            pizza = new VeggiePizza(ingredientFactory);
+            pizza.setName("New York Style Veggie Pizza");
+        } else if (item.equalsIgnoreCase("clam")) {
+            pizza = new ClamPizza(ingredientFactory);
+            pizza.setName("New York Style Clam Pizza");
+        } else if (item.equalsIgnoreCase("pepperoni")) {
+            pizza = new PepperOniPizza(ingredientFactory);
+            pizza.setName("New York Style Pepperoni Pizza");
+        }
+
+        return pizza;
+    }
+}
+
+class ChicagoPizzaStore extends PizzaStore {
+
+    @Override
+    protected Pizza createPizza(String item) {
+        Pizza pizza = null;
+        PizzaIngredientFactory ingredientFactory = new ChicagoIngredientFactory();
+
+        if (item.equalsIgnoreCase("cheese")) {
+            pizza = new CheesePizza(ingredientFactory);
+            pizza.setName("Chicago Style Cheese Pizza");
+        } else if (item.equalsIgnoreCase("veggie")) {
+            pizza = new VeggiePizza(ingredientFactory);
+            pizza.setName("Chicago Style Veggie Pizza");
+        } else if (item.equalsIgnoreCase("clam")) {
+            pizza = new ClamPizza(ingredientFactory);
+            pizza.setName("Chicago style clam Pizza");
+        } else if (item.equalsIgnoreCase("pepperoni")) {
+            pizza = new PepperOniPizza(ingredientFactory);
+            pizza.setName("Chicago Style Pepperoni Pizza");
+        }
+        return pizza;
     }
 }
