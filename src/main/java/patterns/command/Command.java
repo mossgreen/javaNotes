@@ -14,9 +14,9 @@ class CeilingFan {
     String location;
     int speed;
 
-    public CeilingFan(String location, int speed) {
+    public CeilingFan(String location) {
         this.location = location;
-        this.speed = speed;
+        this.speed = OFF;
     }
 
     public void high() {
